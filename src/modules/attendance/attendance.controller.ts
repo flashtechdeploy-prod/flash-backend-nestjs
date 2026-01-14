@@ -1,5 +1,18 @@
-import { Controller, Get, Put, Body, Query, Param, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Put,
+  Body,
+  Query,
+  Param,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { AttendanceService } from './attendance.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
@@ -56,6 +69,9 @@ export class AttendanceController {
     @Query('department') department?: string,
     @Query('designation') designation?: string,
   ) {
-    return this.service.getSummary(from_date, to_date, { department, designation });
+    return this.service.getSummary(from_date, to_date, {
+      department,
+      designation,
+    });
   }
 }

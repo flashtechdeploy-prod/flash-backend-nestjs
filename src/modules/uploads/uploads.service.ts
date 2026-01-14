@@ -15,18 +15,23 @@ export class UploadsService {
     }
   }
 
-  async saveFile(file: Express.Multer.File, subDir?: string): Promise<{ filename: string; url: string }> {
+  async saveFile(
+    file: Express.Multer.File,
+    subDir?: string,
+  ): Promise<{ filename: string; url: string }> {
     const ext = path.extname(file.originalname);
     const filename = `${uuidv4()}${ext}`;
-    const targetDir = subDir ? path.join(this.uploadDir, subDir) : this.uploadDir;
-    
+    const targetDir = subDir
+      ? path.join(this.uploadDir, subDir)
+      : this.uploadDir;
+
     if (!fs.existsSync(targetDir)) {
       fs.mkdirSync(targetDir, { recursive: true });
     }
-    
+
     const targetPath = path.join(targetDir, filename);
     fs.writeFileSync(targetPath, file.buffer);
-    
+
     const url = `/uploads/${subDir ? subDir + '/' : ''}${filename}`;
     return { filename, url };
   }

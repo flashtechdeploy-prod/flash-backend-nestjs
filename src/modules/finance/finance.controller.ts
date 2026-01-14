@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  Param,
+  Query,
+  UseGuards,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { FinanceService } from './finance.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -60,7 +71,10 @@ export class FinanceController {
 
   @Put('journal-entries/:id')
   @ApiOperation({ summary: 'Update journal entry' })
-  async updateJournalEntry(@Param('id', ParseIntPipe) id: number, @Body() dto: any) {
+  async updateJournalEntry(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: any,
+  ) {
     return this.service.updateJournalEntry(id, dto);
   }
 

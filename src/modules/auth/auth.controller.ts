@@ -10,7 +10,11 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { CreateUserDto, LoginDto, TokenResponseDto } from '../users/dto/user.dto';
+import {
+  CreateUserDto,
+  LoginDto,
+  TokenResponseDto,
+} from '../users/dto/user.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @ApiTags('Auth')
@@ -23,7 +27,7 @@ export class AuthController {
   @HttpCode(HttpStatus.CREATED)
   async register(@Body() createUserDto: CreateUserDto) {
     const user = await this.authService.register(createUserDto);
-    const { password, ...result } = user;
+    const { password: _password, ...result } = user;
     return result;
   }
 
@@ -41,7 +45,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Get current user information' })
   async getMe(@Request() req) {
     const user = await this.authService.getCurrentUser(req.user.id);
-    const { password, ...result } = user;
+    const { password: _password, ...result } = user;
     return result;
   }
 

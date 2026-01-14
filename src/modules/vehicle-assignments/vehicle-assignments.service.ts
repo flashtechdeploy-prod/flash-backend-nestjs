@@ -19,22 +19,31 @@ export class VehicleAssignmentsService {
     limit?: number;
   }) {
     const { vehicle_id, from_date, to_date, status, limit = 100 } = query;
-    
+
     const filters: SQL[] = [];
-    if (vehicle_id) filters.push(eq(schema.vehicleAssignments.vehicle_id, vehicle_id));
+    if (vehicle_id)
+      filters.push(eq(schema.vehicleAssignments.vehicle_id, vehicle_id));
     if (status) filters.push(eq(schema.vehicleAssignments.status, status));
-    if (from_date && to_date) filters.push(between(schema.vehicleAssignments.assignment_date, from_date, to_date));
-    
+    if (from_date && to_date)
+      filters.push(
+        between(schema.vehicleAssignments.assignment_date, from_date, to_date),
+      );
+
     const finalFilter = filters.length > 0 ? and(...filters) : undefined;
-    
-    return this.db.select().from(schema.vehicleAssignments)
+
+    return this.db
+      .select()
+      .from(schema.vehicleAssignments)
       .where(finalFilter)
       .limit(limit)
       .orderBy(desc(schema.vehicleAssignments.id));
   }
 
   async findOne(id: number) {
-    const [assignment] = await this.db.select().from(schema.vehicleAssignments).where(eq(schema.vehicleAssignments.id, id));
+    const [assignment] = await this.db
+      .select()
+      .from(schema.vehicleAssignments)
+      .where(eq(schema.vehicleAssignments.id, id));
     if (!assignment) {
       throw new NotFoundException(`Assignment ${id} not found`);
     }
@@ -43,7 +52,10 @@ export class VehicleAssignmentsService {
 
   async create(createDto: any) {
     const data: any = { ...createDto };
-    const [result] = await this.db.insert(schema.vehicleAssignments).values(data).returning();
+    const [result] = await this.db
+      .insert(schema.vehicleAssignments)
+      .values(data)
+      .returning();
     return result;
   }
 
@@ -51,12 +63,17 @@ export class VehicleAssignmentsService {
     await this.findOne(id);
     const data: any = { ...updateDto };
 
-    await this.db.update(schema.vehicleAssignments).set(data).where(eq(schema.vehicleAssignments.id, id));
+    await this.db
+      .update(schema.vehicleAssignments)
+      .set(data)
+      .where(eq(schema.vehicleAssignments.id, id));
     return this.findOne(id);
   }
 
   async remove(id: number) {
-    await this.db.delete(schema.vehicleAssignments).where(eq(schema.vehicleAssignments.id, id));
+    await this.db
+      .delete(schema.vehicleAssignments)
+      .where(eq(schema.vehicleAssignments.id, id));
     return { message: `Assignment ${id} deleted` };
   }
 
@@ -67,11 +84,20 @@ export class VehicleAssignmentsService {
     year?: number;
     vehicle_id?: string;
   }) {
-    const assignments = await this.findAll({ vehicle_id: query.vehicle_id, limit: 10000 });
-    
-    const totalKm = assignments.reduce((sum, a) => sum + (Number((a as any).distance_km) || 0), 0);
-    const totalAmount = assignments.reduce((sum, a) => sum + (Number(a.cost) || 0), 0);
-    
+    const assignments = await this.findAll({
+      vehicle_id: query.vehicle_id,
+      limit: 10000,
+    });
+
+    const totalKm = assignments.reduce(
+      (sum, a) => sum + (Number((a as any).distance_km) || 0),
+      0,
+    );
+    const totalAmount = assignments.reduce(
+      (sum, a) => sum + (Number(a.cost) || 0),
+      0,
+    );
+
     return {
       period: query.period || 'all',
       assignments: assignments.length,

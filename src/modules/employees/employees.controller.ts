@@ -15,9 +15,20 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery, ApiConsumes } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiQuery,
+  ApiConsumes,
+} from '@nestjs/swagger';
 import { EmployeesService } from './employees.service';
-import { CreateEmployeeDto, UpdateEmployeeDto, EmployeeQueryDto, CreateWarningDto } from './dto/employee.dto';
+import {
+  CreateEmployeeDto,
+  UpdateEmployeeDto,
+  EmployeeQueryDto,
+  CreateWarningDto,
+} from './dto/employee.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('Employees')
@@ -136,7 +147,9 @@ export class EmployeesController {
   // Documents endpoints
   @Get('by-db-id/:employee_db_id/documents')
   @ApiOperation({ summary: 'List employee documents' })
-  async listDocuments(@Param('employee_db_id', ParseIntPipe) employeeDbId: number) {
+  async listDocuments(
+    @Param('employee_db_id', ParseIntPipe) employeeDbId: number,
+  ) {
     return this.employeesService.listDocuments(employeeDbId);
   }
 
@@ -172,7 +185,9 @@ export class EmployeesController {
   // Warnings endpoints
   @Get('by-db-id/:employee_db_id/warnings')
   @ApiOperation({ summary: 'List employee warnings' })
-  async listWarnings(@Param('employee_db_id', ParseIntPipe) employeeDbId: number) {
+  async listWarnings(
+    @Param('employee_db_id', ParseIntPipe) employeeDbId: number,
+  ) {
     return this.employeesService.listWarnings(employeeDbId);
   }
 
@@ -197,7 +212,9 @@ export class EmployeesController {
   // Warning documents
   @Get('warnings/:warning_id/documents')
   @ApiOperation({ summary: 'List warning documents' })
-  async listWarningDocuments(@Param('warning_id', ParseIntPipe) warningId: number) {
+  async listWarningDocuments(
+    @Param('warning_id', ParseIntPipe) warningId: number,
+  ) {
     return this.employeesService.listWarningDocuments(warningId);
   }
 

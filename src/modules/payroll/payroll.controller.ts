@@ -1,5 +1,18 @@
-import { Controller, Get, Post, Put, Body, Query, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Body,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { PayrollService } from './payroll.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
@@ -14,7 +27,10 @@ export class PayrollController {
   @ApiOperation({ summary: 'Get payment status' })
   @ApiQuery({ name: 'month', required: true })
   @ApiQuery({ name: 'employee_id', required: true })
-  async getPaymentStatus(@Query('month') month: string, @Query('employee_id') employee_id: string) {
+  async getPaymentStatus(
+    @Query('month') month: string,
+    @Query('employee_id') employee_id: string,
+  ) {
     return this.service.getPaymentStatus(month, employee_id);
   }
 
@@ -48,7 +64,10 @@ export class PayrollController {
   @ApiOperation({ summary: 'List payroll sheet entries' })
   @ApiQuery({ name: 'from_date', required: true })
   @ApiQuery({ name: 'to_date', required: true })
-  async listSheetEntries(@Query('from_date') from_date: string, @Query('to_date') to_date: string) {
+  async listSheetEntries(
+    @Query('from_date') from_date: string,
+    @Query('to_date') to_date: string,
+  ) {
     return this.service.listSheetEntries(from_date, to_date);
   }
 

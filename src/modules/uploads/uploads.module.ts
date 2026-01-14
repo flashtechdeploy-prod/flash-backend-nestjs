@@ -11,7 +11,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       useFactory: async (configService: ConfigService) => ({
         dest: configService.get('UPLOAD_DIR', './uploads'),
         limits: {
-          fileSize: parseInt(configService.get('MAX_FILE_SIZE', '10485760'), 10),
+          fileSize: parseInt(
+            configService.get('MAX_FILE_SIZE', '10485760'),
+            10,
+          ),
         },
       }),
       inject: [ConfigService],

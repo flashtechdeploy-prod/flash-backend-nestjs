@@ -13,12 +13,14 @@ export const DRIZZLE = 'DRIZZLE';
       provide: DRIZZLE,
       useFactory: (configService: ConfigService) => {
         const connectionString = configService.get<string>('DATABASE_URL');
-        const cleanConnectionString = connectionString?.replace('?sslmode=require', '').replace('&sslmode=require', '');
+        const cleanConnectionString = connectionString
+          ?.replace('?sslmode=require', '')
+          .replace('&sslmode=require', '');
         const pool = new Pool({
           connectionString: cleanConnectionString,
           ssl: {
-            rejectUnauthorized: false
-          }
+            rejectUnauthorized: false,
+          },
         });
         return drizzle(pool, { schema });
       },

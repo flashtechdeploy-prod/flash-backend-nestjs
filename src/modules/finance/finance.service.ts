@@ -12,59 +12,88 @@ export class FinanceService {
   ) {}
 
   async listAccounts() {
-    return this.db.select().from(schema.finance_accounts).orderBy(asc(schema.finance_accounts.code));
+    return this.db
+      .select()
+      .from(schema.finance_accounts)
+      .orderBy(asc(schema.finance_accounts.code));
   }
 
   async getAccount(id: number) {
-    const [account] = await this.db.select().from(schema.finance_accounts).where(eq(schema.finance_accounts.id, id));
+    const [account] = await this.db
+      .select()
+      .from(schema.finance_accounts)
+      .where(eq(schema.finance_accounts.id, id));
     if (!account) throw new NotFoundException('Account not found');
     return account;
   }
 
   async createAccount(dto: any) {
     const data: any = { ...dto };
-    const [result] = await this.db.insert(schema.finance_accounts).values(data).returning();
+    const [result] = await this.db
+      .insert(schema.finance_accounts)
+      .values(data)
+      .returning();
     return result;
   }
 
   async updateAccount(id: number, dto: any) {
     await this.getAccount(id);
     const data: any = { ...dto };
-    await this.db.update(schema.finance_accounts).set(data).where(eq(schema.finance_accounts.id, id));
+    await this.db
+      .update(schema.finance_accounts)
+      .set(data)
+      .where(eq(schema.finance_accounts.id, id));
     return this.getAccount(id);
   }
 
   async deleteAccount(id: number) {
     await this.getAccount(id);
-    await this.db.delete(schema.finance_accounts).where(eq(schema.finance_accounts.id, id));
+    await this.db
+      .delete(schema.finance_accounts)
+      .where(eq(schema.finance_accounts.id, id));
     return { message: 'Deleted' };
   }
 
   async listJournalEntries() {
-    const entries = await this.db.select().from(schema.finance_journal_entries).orderBy(desc(schema.finance_journal_entries.id));
+    const entries = await this.db
+      .select()
+      .from(schema.finance_journal_entries)
+      .orderBy(desc(schema.finance_journal_entries.id));
     const results: any[] = [];
     for (const entry of entries) {
-      const lines = await this.db.select().from(schema.finance_journal_lines).where(eq(schema.finance_journal_lines.entry_id, entry.id));
+      const lines = await this.db
+        .select()
+        .from(schema.finance_journal_lines)
+        .where(eq(schema.finance_journal_lines.entry_id, entry.id));
       results.push({ ...entry, lines });
     }
     return results;
   }
 
   async getJournalEntry(id: number) {
-    const [entry] = await this.db.select().from(schema.finance_journal_entries).where(eq(schema.finance_journal_entries.id, id));
+    const [entry] = await this.db
+      .select()
+      .from(schema.finance_journal_entries)
+      .where(eq(schema.finance_journal_entries.id, id));
     if (!entry) throw new NotFoundException('Journal entry not found');
-    const lines = await this.db.select().from(schema.finance_journal_lines).where(eq(schema.finance_journal_lines.entry_id, id));
+    const lines = await this.db
+      .select()
+      .from(schema.finance_journal_lines)
+      .where(eq(schema.finance_journal_lines.entry_id, id));
     return { ...entry, lines };
   }
 
   async createJournalEntry(dto: any) {
     const entry_no = `JE-${Date.now()}`;
-    const [saved] = await this.db.insert(schema.finance_journal_entries).values({
-      entry_no,
-      entry_date: dto.entry_date || dto.entryDate,
-      memo: dto.memo,
-      status: 'draft'
-    }).returning();
+    const [saved] = await this.db
+      .insert(schema.finance_journal_entries)
+      .values({
+        entry_no,
+        entry_date: dto.entry_date || dto.entryDate,
+        memo: dto.memo,
+        status: 'draft',
+      })
+      .returning();
 
     if (dto.lines) {
       for (const line of dto.lines) {
@@ -73,7 +102,7 @@ export class FinanceService {
           account_id: line.account_id || line.accountId,
           description: line.description,
           debit: line.debit || 0,
-          credit: line.credit || 0
+          credit: line.credit || 0,
         });
       }
     }
@@ -82,22 +111,29 @@ export class FinanceService {
 
   async updateJournalEntry(id: number, dto: any) {
     await this.getJournalEntry(id);
-    await this.db.update(schema.finance_journal_entries).set(dto).where(eq(schema.finance_journal_entries.id, id));
+    await this.db
+      .update(schema.finance_journal_entries)
+      .set(dto)
+      .where(eq(schema.finance_journal_entries.id, id));
     return this.getJournalEntry(id);
   }
 
   async deleteJournalEntry(id: number) {
     await this.getJournalEntry(id);
-    await this.db.delete(schema.finance_journal_entries).where(eq(schema.finance_journal_entries.id, id));
+    await this.db
+      .delete(schema.finance_journal_entries)
+      .where(eq(schema.finance_journal_entries.id, id));
     return { message: 'Deleted' };
   }
 
   async postJournalEntry(id: number) {
-    const entry = await this.getJournalEntry(id);
-    await this.db.update(schema.finance_journal_entries).set({
-      status: 'posted',
-      posted_at: new Date().toISOString()
-    }).where(eq(schema.finance_journal_entries.id, id));
+    await this.db
+      .update(schema.finance_journal_entries)
+      .set({
+        status: 'posted',
+        posted_at: new Date().toISOString(),
+      })
+      .where(eq(schema.finance_journal_entries.id, id));
     return this.getJournalEntry(id);
   }
 
@@ -116,7 +152,9 @@ export class FinanceService {
   }) {
     const filters: SQL[] = [];
     if (query.from_date && query.to_date) {
-      filters.push(between(schema.expenses.expense_date, query.from_date, query.to_date));
+      filters.push(
+        between(schema.expenses.expense_date, query.from_date, query.to_date),
+      );
     }
     if (query.status) {
       filters.push(eq(schema.expenses.status, query.status));
@@ -134,7 +172,10 @@ export class FinanceService {
   }
 
   async getExpense(id: number) {
-    const [expense] = await this.db.select().from(schema.expenses).where(eq(schema.expenses.id, id));
+    const [expense] = await this.db
+      .select()
+      .from(schema.expenses)
+      .where(eq(schema.expenses.id, id));
     if (!expense) throw new NotFoundException('Expense not found');
     return expense;
   }
@@ -148,7 +189,10 @@ export class FinanceService {
       amount: dto.amount,
       status: 'PENDING',
     };
-    const [result] = await this.db.insert(schema.expenses).values(data).returning();
+    const [result] = await this.db
+      .insert(schema.expenses)
+      .values(data)
+      .returning();
     return result;
   }
 
@@ -160,7 +204,10 @@ export class FinanceService {
       description: dto.description,
       amount: dto.amount,
     };
-    await this.db.update(schema.expenses).set(data).where(eq(schema.expenses.id, id));
+    await this.db
+      .update(schema.expenses)
+      .set(data)
+      .where(eq(schema.expenses.id, id));
     return this.getExpense(id);
   }
 
@@ -172,7 +219,10 @@ export class FinanceService {
 
   private async setExpenseStatus(id: number, status: string) {
     await this.getExpense(id);
-    await this.db.update(schema.expenses).set({ status }).where(eq(schema.expenses.id, id));
+    await this.db
+      .update(schema.expenses)
+      .set({ status })
+      .where(eq(schema.expenses.id, id));
     return this.getExpense(id);
   }
 

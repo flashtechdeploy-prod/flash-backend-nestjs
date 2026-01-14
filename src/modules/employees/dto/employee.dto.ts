@@ -45,8 +45,14 @@ export class CreateEmployeeDto {
   @ApiPropertyOptional() @IsString() @IsOptional() mobile_no?: string;
   @ApiPropertyOptional() @IsString() @IsOptional() personal_mobile_no?: string;
   @ApiPropertyOptional() @IsString() @IsOptional() home_contact?: string;
-  @ApiPropertyOptional() @IsString() @IsOptional() emergency_contact_name?: string;
-  @ApiPropertyOptional() @IsString() @IsOptional() emergency_contact_number?: string;
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  emergency_contact_name?: string;
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  emergency_contact_number?: string;
 
   // Address
   @ApiPropertyOptional() @IsString() @IsOptional() address?: string;
@@ -59,7 +65,10 @@ export class CreateEmployeeDto {
   @ApiPropertyOptional() @IsString() @IsOptional() tehsil?: string;
   @ApiPropertyOptional() @IsString() @IsOptional() district?: string;
   @ApiPropertyOptional() @IsString() @IsOptional() permanent_village?: string;
-  @ApiPropertyOptional() @IsString() @IsOptional() permanent_post_office?: string;
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  permanent_post_office?: string;
   @ApiPropertyOptional() @IsString() @IsOptional() permanent_thana?: string;
   @ApiPropertyOptional() @IsString() @IsOptional() permanent_tehsil?: string;
   @ApiPropertyOptional() @IsString() @IsOptional() permanent_district?: string;
@@ -89,9 +98,15 @@ export class CreateEmployeeDto {
   @ApiPropertyOptional() @IsString() @IsOptional() unit?: string;
   @ApiPropertyOptional() @IsString() @IsOptional() category?: string;
   @ApiPropertyOptional() @IsString() @IsOptional() date_of_enrolment?: string;
-  @ApiPropertyOptional() @IsString() @IsOptional() date_of_re_enrolment?: string;
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  date_of_re_enrolment?: string;
   @ApiPropertyOptional() @IsString() @IsOptional() served_in?: string;
-  @ApiPropertyOptional() @IsString() @IsOptional() experience_in_security?: string;
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  experience_in_security?: string;
   @ApiPropertyOptional() @IsString() @IsOptional() cause_of_discharge?: string;
   @ApiPropertyOptional() @IsString() @IsOptional() medical_category?: string;
   @ApiPropertyOptional() @IsString() @IsOptional() previous_employment?: string;
@@ -112,16 +127,34 @@ export class CreateEmployeeDto {
 
   // Training & Verification
   @ApiPropertyOptional() @IsString() @IsOptional() security_clearance?: string;
-  @ApiPropertyOptional() @IsBoolean() @IsOptional() basic_security_training?: boolean;
-  @ApiPropertyOptional() @IsBoolean() @IsOptional() fire_safety_training?: boolean;
-  @ApiPropertyOptional() @IsBoolean() @IsOptional() first_aid_certification?: boolean;
+  @ApiPropertyOptional()
+  @IsBoolean()
+  @IsOptional()
+  basic_security_training?: boolean;
+  @ApiPropertyOptional()
+  @IsBoolean()
+  @IsOptional()
+  fire_safety_training?: boolean;
+  @ApiPropertyOptional()
+  @IsBoolean()
+  @IsOptional()
+  first_aid_certification?: boolean;
   @ApiPropertyOptional() @IsBoolean() @IsOptional() agreement?: boolean;
   @ApiPropertyOptional() @IsBoolean() @IsOptional() police_clearance?: boolean;
-  @ApiPropertyOptional() @IsString() @IsOptional() sho_verification_date?: string;
-  @ApiPropertyOptional() @IsString() @IsOptional() ssp_verification_date?: string;
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  sho_verification_date?: string;
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  ssp_verification_date?: string;
 
   // Documents
-  @ApiPropertyOptional() @IsString() @IsOptional() original_document_held?: string;
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  original_document_held?: string;
   @ApiPropertyOptional() @IsString() @IsOptional() agreement_date?: string;
   @ApiPropertyOptional() @IsString() @IsOptional() other_documents?: string;
 
@@ -131,7 +164,10 @@ export class CreateEmployeeDto {
   @ApiPropertyOptional() @IsString() @IsOptional() nok_mobile_no?: string;
   @ApiPropertyOptional() @IsString() @IsOptional() next_of_kin_name?: string;
   @ApiPropertyOptional() @IsString() @IsOptional() next_of_kin_cnic?: string;
-  @ApiPropertyOptional() @IsString() @IsOptional() next_of_kin_mobile_number?: string;
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  next_of_kin_mobile_number?: string;
 
   // Family
   @ApiPropertyOptional() @IsInt() @Min(0) @IsOptional() sons?: number;
@@ -140,8 +176,14 @@ export class CreateEmployeeDto {
   @ApiPropertyOptional() @IsInt() @Min(0) @IsOptional() sisters?: number;
 
   // Signatures & Biometrics
-  @ApiPropertyOptional() @IsString() @IsOptional() signature_recording_officer?: string;
-  @ApiPropertyOptional() @IsString() @IsOptional() signature_individual?: string;
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  signature_recording_officer?: string;
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  signature_individual?: string;
   @ApiPropertyOptional() @IsString() @IsOptional() thumb_impression?: string;
   @ApiPropertyOptional() @IsString() @IsOptional() index_impression?: string;
   @ApiPropertyOptional() @IsString() @IsOptional() middle_impression?: string;

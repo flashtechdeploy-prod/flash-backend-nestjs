@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Query, Param, UseGuards, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Query,
+  Param,
+  UseGuards,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
@@ -9,7 +17,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 export class EmployeesInactiveController {
   @Get()
   @ApiOperation({ summary: 'List inactive employees' })
-  async listInactive(@Query() query: any) {
+  async listInactive(@Query() _query: any) {
     return { employees: [], total: 0 };
   }
 

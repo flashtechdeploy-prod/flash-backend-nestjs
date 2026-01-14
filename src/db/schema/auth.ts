@@ -1,4 +1,12 @@
-import { pgTable, serial, text, boolean, timestamp, primaryKey, integer } from 'drizzle-orm/pg-core';
+import {
+  pgTable,
+  serial,
+  text,
+  boolean,
+  timestamp,
+  primaryKey,
+  integer,
+} from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
   id: serial('id').primaryKey(),
@@ -23,16 +31,32 @@ export const permissions = pgTable('permissions', {
   description: text('description'),
 });
 
-export const users_to_roles = pgTable('users_to_roles', {
-  user_id: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  role_id: integer('role_id').notNull().references(() => roles.id, { onDelete: 'cascade' }),
-}, (t) => ({
-  pk: primaryKey({ columns: [t.user_id, t.role_id] }),
-}));
+export const users_to_roles = pgTable(
+  'users_to_roles',
+  {
+    user_id: integer('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    role_id: integer('role_id')
+      .notNull()
+      .references(() => roles.id, { onDelete: 'cascade' }),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.user_id, t.role_id] }),
+  }),
+);
 
-export const roles_to_permissions = pgTable('roles_to_permissions', {
-  role_id: integer('role_id').notNull().references(() => roles.id, { onDelete: 'cascade' }),
-  permission_id: integer('permission_id').notNull().references(() => permissions.id, { onDelete: 'cascade' }),
-}, (t) => ({
-  pk: primaryKey({ columns: [t.role_id, t.permission_id] }),
-}));
+export const roles_to_permissions = pgTable(
+  'roles_to_permissions',
+  {
+    role_id: integer('role_id')
+      .notNull()
+      .references(() => roles.id, { onDelete: 'cascade' }),
+    permission_id: integer('permission_id')
+      .notNull()
+      .references(() => permissions.id, { onDelete: 'cascade' }),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.role_id, t.permission_id] }),
+  }),
+);

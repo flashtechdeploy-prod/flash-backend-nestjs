@@ -1,10 +1,19 @@
-import { Injectable, NotFoundException, ConflictException, Inject } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+  Inject,
+} from '@nestjs/common';
 import { DRIZZLE } from '../../db/drizzle.module';
 import * as schema from '../../db/schema';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { eq } from 'drizzle-orm';
 import { UsersService } from '../users/users.service';
-import { CreateRoleDto, UpdateRoleDto, CreatePermissionDto } from './dto/admin.dto';
+import {
+  CreateRoleDto,
+  UpdateRoleDto,
+  CreatePermissionDto,
+} from './dto/admin.dto';
 import { AdminUserCreateDto, AdminUserUpdateDto } from '../users/dto/user.dto';
 
 @Injectable()
@@ -21,11 +30,17 @@ export class AdminService {
   }
 
   async createPermission(createDto: CreatePermissionDto) {
-    const [existing] = await this.db.select().from(schema.permissions).where(eq(schema.permissions.name, createDto.name));
+    const [existing] = await this.db
+      .select()
+      .from(schema.permissions)
+      .where(eq(schema.permissions.name, createDto.name));
     if (existing) {
       throw new ConflictException('Permission already exists');
     }
-    const [result] = await this.db.insert(schema.permissions).values(createDto).returning();
+    const [result] = await this.db
+      .insert(schema.permissions)
+      .values(createDto)
+      .returning();
     return result;
   }
 
@@ -35,13 +50,19 @@ export class AdminService {
   }
 
   async createRole(createDto: CreateRoleDto) {
-    const [existing] = await this.db.select().from(schema.roles).where(eq(schema.roles.name, createDto.name));
+    const [existing] = await this.db
+      .select()
+      .from(schema.roles)
+      .where(eq(schema.roles.name, createDto.name));
     if (existing) {
       throw new ConflictException('Role already exists');
     }
 
     const { permission_ids, ...roleData } = createDto;
-    const [role] = await this.db.insert(schema.roles).values(roleData).returning();
+    const [role] = await this.db
+      .insert(schema.roles)
+      .values(roleData)
+      .returning();
 
     if (permission_ids && permission_ids.length > 0) {
       for (const pId of permission_ids) {
@@ -56,16 +77,24 @@ export class AdminService {
   }
 
   async updateRole(roleId: number, updateDto: UpdateRoleDto) {
-    const [role] = await this.db.select().from(schema.roles).where(eq(schema.roles.id, roleId));
+    const [role] = await this.db
+      .select()
+      .from(schema.roles)
+      .where(eq(schema.roles.id, roleId));
     if (!role) {
       throw new NotFoundException(`Role with ID ${roleId} not found`);
     }
 
     const { permission_ids, ...roleData } = updateDto;
-    await this.db.update(schema.roles).set(roleData).where(eq(schema.roles.id, roleId));
-    
+    await this.db
+      .update(schema.roles)
+      .set(roleData)
+      .where(eq(schema.roles.id, roleId));
+
     if (permission_ids !== undefined) {
-      await this.db.delete(schema.roles_to_permissions).where(eq(schema.roles_to_permissions.role_id, roleId));
+      await this.db
+        .delete(schema.roles_to_permissions)
+        .where(eq(schema.roles_to_permissions.role_id, roleId));
       for (const pId of permission_ids) {
         await this.db.insert(schema.roles_to_permissions).values({
           role_id: roleId,
@@ -74,12 +103,18 @@ export class AdminService {
       }
     }
 
-    const [updatedRole] = await this.db.select().from(schema.roles).where(eq(schema.roles.id, roleId));
+    const [updatedRole] = await this.db
+      .select()
+      .from(schema.roles)
+      .where(eq(schema.roles.id, roleId));
     return updatedRole;
   }
 
   async deleteRole(roleId: number) {
-    const [role] = await this.db.select().from(schema.roles).where(eq(schema.roles.id, roleId));
+    const [role] = await this.db
+      .select()
+      .from(schema.roles)
+      .where(eq(schema.roles.id, roleId));
     if (!role) {
       throw new NotFoundException(`Role with ID ${roleId} not found`);
     }

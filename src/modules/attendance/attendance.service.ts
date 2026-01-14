@@ -12,21 +12,32 @@ export class AttendanceService {
   ) {}
 
   async findByDate(date: string) {
-    const records = await this.db.select().from(schema.attendance)
+    const records = await this.db
+      .select()
+      .from(schema.attendance)
       .where(eq(schema.attendance.date, date))
       .orderBy(asc(schema.attendance.employee_id));
     return { date, records };
   }
 
   async findByRange(fromDate: string, toDate: string) {
-    return this.db.select().from(schema.attendance)
+    return this.db
+      .select()
+      .from(schema.attendance)
       .where(between(schema.attendance.date, fromDate, toDate))
       .orderBy(asc(schema.attendance.date), asc(schema.attendance.employee_id));
   }
 
   async findByEmployee(employeeId: string, fromDate: string, toDate: string) {
-    return this.db.select().from(schema.attendance)
-      .where(and(eq(schema.attendance.employee_id, employeeId), between(schema.attendance.date, fromDate, toDate)))
+    return this.db
+      .select()
+      .from(schema.attendance)
+      .where(
+        and(
+          eq(schema.attendance.employee_id, employeeId),
+          between(schema.attendance.date, fromDate, toDate),
+        ),
+      )
       .orderBy(asc(schema.attendance.date));
   }
 
@@ -35,10 +46,17 @@ export class AttendanceService {
     const leaveRecords: any[] = [];
 
     for (const record of records) {
-      const [existing] = await this.db.select().from(schema.attendance)
-        .where(and(eq(schema.attendance.employee_id, record.employee_id), eq(schema.attendance.date, date)));
-      
-      const data: any = { 
+      const [existing] = await this.db
+        .select()
+        .from(schema.attendance)
+        .where(
+          and(
+            eq(schema.attendance.employee_id, record.employee_id),
+            eq(schema.attendance.date, date),
+          ),
+        );
+
+      const data: any = {
         employee_id: record.employee_id,
         date: date,
         status: record.status,
@@ -48,11 +66,14 @@ export class AttendanceService {
         late_minutes: record.late_minutes,
         late_deduction: record.late_deduction,
         leave_type: record.leave_type,
-        fine_amount: record.fine_amount
+        fine_amount: record.fine_amount,
       };
 
       if (existing) {
-        await this.db.update(schema.attendance).set(data).where(eq(schema.attendance.id, (existing as any).id));
+        await this.db
+          .update(schema.attendance)
+          .set(data)
+          .where(eq(schema.attendance.id, (existing as any).id));
       } else {
         await this.db.insert(schema.attendance).values(data);
       }
@@ -98,44 +119,52 @@ export class AttendanceService {
       const tomorrowStr = tomorrow.toISOString().split('T')[0];
 
       // Find leave period ending yesterday (extend forward)
-      const [extendForward] = await this.db.select().from(schema.leavePeriods)
+      const [extendForward] = await this.db
+        .select()
+        .from(schema.leavePeriods)
         .where(
           and(
             eq(schema.leavePeriods.employee_id, employeeId),
             eq(schema.leavePeriods.to_date, yesterdayStr),
-            eq(schema.leavePeriods.leave_type, leaveType)
-          )
+            eq(schema.leavePeriods.leave_type, leaveType),
+          ),
         );
 
       // Find leave period starting tomorrow (extend backward)
-      const [extendBackward] = await this.db.select().from(schema.leavePeriods)
+      const [extendBackward] = await this.db
+        .select()
+        .from(schema.leavePeriods)
         .where(
           and(
             eq(schema.leavePeriods.employee_id, employeeId),
             eq(schema.leavePeriods.from_date, tomorrowStr),
-            eq(schema.leavePeriods.leave_type, leaveType)
-          )
+            eq(schema.leavePeriods.leave_type, leaveType),
+          ),
         );
 
       if (extendForward) {
         // Extend the leave period forward
-        await this.db.update(schema.leavePeriods)
+        await this.db
+          .update(schema.leavePeriods)
           .set({ to_date: currentDate })
           .where(eq(schema.leavePeriods.id, extendForward.id));
       } else if (extendBackward) {
         // Extend the leave period backward
-        await this.db.update(schema.leavePeriods)
+        await this.db
+          .update(schema.leavePeriods)
           .set({ from_date: currentDate })
           .where(eq(schema.leavePeriods.id, extendBackward.id));
       } else {
         // Check if leave period already exists for this exact date
-        const [existing] = await this.db.select().from(schema.leavePeriods)
+        const [existing] = await this.db
+          .select()
+          .from(schema.leavePeriods)
           .where(
             and(
               eq(schema.leavePeriods.employee_id, employeeId),
               eq(schema.leavePeriods.from_date, currentDate),
-              eq(schema.leavePeriods.to_date, currentDate)
-            )
+              eq(schema.leavePeriods.to_date, currentDate),
+            ),
           );
 
         if (!existing) {
@@ -152,20 +181,24 @@ export class AttendanceService {
     }
   }
 
-  async getSummary(fromDate: string, toDate: string, query: { department?: string; designation?: string }) {
+  async getSummary(
+    fromDate: string,
+    toDate: string,
+    _query: { department?: string; designation?: string },
+  ) {
     const records = await this.findByRange(fromDate, toDate);
-    
+
     const summary = {
       from_date: fromDate,
       to_date: toDate,
       total_records: records.length,
       by_status: {} as Record<string, number>,
     };
-    
+
     records.forEach((r) => {
       summary.by_status[r.status] = (summary.by_status[r.status] || 0) + 1;
     });
-    
+
     return summary;
   }
 }

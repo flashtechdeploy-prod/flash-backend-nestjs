@@ -11,27 +11,44 @@ export class VehicleMaintenanceService {
     private db: NodePgDatabase<typeof schema>,
   ) {}
 
-  async findAll(query: { vehicle_id?: string; employee_id?: string; vendor?: string; date?: string; month?: string }) {
+  async findAll(query: {
+    vehicle_id?: string;
+    employee_id?: string;
+    vendor?: string;
+    date?: string;
+    month?: string;
+  }) {
     const filters: SQL[] = [];
-    if (query.vehicle_id) filters.push(eq(schema.vehicleMaintenance.vehicle_id, query.vehicle_id));
-    if (query.vendor) filters.push(eq(schema.vehicleMaintenance.vendor, query.vendor));
-    
+    if (query.vehicle_id)
+      filters.push(eq(schema.vehicleMaintenance.vehicle_id, query.vehicle_id));
+    if (query.vendor)
+      filters.push(eq(schema.vehicleMaintenance.vendor, query.vendor));
+
     const finalFilter = filters.length > 0 ? and(...filters) : undefined;
-    
-    return this.db.select().from(schema.vehicleMaintenance)
+
+    return this.db
+      .select()
+      .from(schema.vehicleMaintenance)
       .where(finalFilter)
       .orderBy(desc(schema.vehicleMaintenance.id));
   }
 
   async findOne(id: number) {
-    const [record] = await this.db.select().from(schema.vehicleMaintenance).where(eq(schema.vehicleMaintenance.id, id));
-    if (!record) throw new NotFoundException(`Maintenance record ${id} not found`);
+    const [record] = await this.db
+      .select()
+      .from(schema.vehicleMaintenance)
+      .where(eq(schema.vehicleMaintenance.id, id));
+    if (!record)
+      throw new NotFoundException(`Maintenance record ${id} not found`);
     return record;
   }
 
   async create(dto: any) {
     const data: any = { ...dto };
-    const [result] = await this.db.insert(schema.vehicleMaintenance).values(data).returning();
+    const [result] = await this.db
+      .insert(schema.vehicleMaintenance)
+      .values(data)
+      .returning();
     return result;
   }
 
@@ -39,12 +56,17 @@ export class VehicleMaintenanceService {
     await this.findOne(id);
     const data: any = { ...dto };
 
-    await this.db.update(schema.vehicleMaintenance).set(data).where(eq(schema.vehicleMaintenance.id, id));
+    await this.db
+      .update(schema.vehicleMaintenance)
+      .set(data)
+      .where(eq(schema.vehicleMaintenance.id, id));
     return this.findOne(id);
   }
 
   async remove(id: number) {
-    await this.db.delete(schema.vehicleMaintenance).where(eq(schema.vehicleMaintenance.id, id));
+    await this.db
+      .delete(schema.vehicleMaintenance)
+      .where(eq(schema.vehicleMaintenance.id, id));
     return { message: 'Deleted' };
   }
 }

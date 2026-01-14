@@ -1,5 +1,15 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  Param,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { RestrictedInventoryService } from './restricted-inventory.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
@@ -11,34 +21,58 @@ export class RestrictedInventoryController {
   constructor(private readonly service: RestrictedInventoryService) {}
 
   @Get('items')
-  async listItems() { return this.service.listItems(); }
+  async listItems() {
+    return this.service.listItems();
+  }
 
   @Post('items')
-  async createItem(@Body() dto: any) { return this.service.createItem(dto); }
+  async createItem(@Body() dto: any) {
+    return this.service.createItem(dto);
+  }
 
   @Get('items/:item_code')
-  async getItem(@Param('item_code') item_code: string) { return this.service.getItem(item_code); }
+  async getItem(@Param('item_code') item_code: string) {
+    return this.service.getItem(item_code);
+  }
 
   @Put('items/:item_code')
-  async updateItem(@Param('item_code') item_code: string, @Body() dto: any) { return this.service.updateItem(item_code, dto); }
+  async updateItem(@Param('item_code') item_code: string, @Body() dto: any) {
+    return this.service.updateItem(item_code, dto);
+  }
 
   @Delete('items/:item_code')
-  async deleteItem(@Param('item_code') item_code: string) { return this.service.deleteItem(item_code); }
+  async deleteItem(@Param('item_code') item_code: string) {
+    return this.service.deleteItem(item_code);
+  }
 
   @Get('items/:item_code/serial-units')
-  async listSerialUnits(@Param('item_code') item_code: string) { return this.service.listSerialUnits(item_code); }
+  async listSerialUnits(@Param('item_code') item_code: string) {
+    return this.service.listSerialUnits(item_code);
+  }
 
   @Post('items/:item_code/serial-units')
-  async createSerialUnit(@Param('item_code') item_code: string, @Body() dto: any) { return this.service.createSerialUnit(item_code, dto); }
+  async createSerialUnit(
+    @Param('item_code') item_code: string,
+    @Body() dto: any,
+  ) {
+    return this.service.createSerialUnit(item_code, dto);
+  }
 
   @Get('transactions')
-  async listTransactions(@Query() query: any) { return this.service.listTransactions(query); }
+  async listTransactions(@Query() query: any) {
+    return this.service.listTransactions(query);
+  }
 
   @Post('serial-units/:serial_unit_id/issue')
-  async issueSerial(@Param('serial_unit_id') id: number, @Body('employee_id') employee_id: string) {
+  async issueSerial(
+    @Param('serial_unit_id') id: number,
+    @Body('employee_id') employee_id: string,
+  ) {
     return this.service.issueSerial(id, employee_id);
   }
 
   @Post('serial-units/:serial_unit_id/return')
-  async returnSerial(@Param('serial_unit_id') id: number) { return this.service.returnSerial(id); }
+  async returnSerial(@Param('serial_unit_id') id: number) {
+    return this.service.returnSerial(id);
+  }
 }

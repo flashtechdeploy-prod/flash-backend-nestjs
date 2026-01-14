@@ -12,22 +12,43 @@ export class PayrollService {
   ) {}
 
   async getPaymentStatus(month: string, employeeId: string) {
-    const [status] = await this.db.select().from(schema.payrollPaymentStatus)
-      .where(and(eq(schema.payrollPaymentStatus.month, month), eq(schema.payrollPaymentStatus.employee_id, employeeId)));
+    const [status] = await this.db
+      .select()
+      .from(schema.payrollPaymentStatus)
+      .where(
+        and(
+          eq(schema.payrollPaymentStatus.month, month),
+          eq(schema.payrollPaymentStatus.employee_id, employeeId),
+        ),
+      );
     return status || { employee_id: employeeId, month, status: 'unpaid' };
   }
 
-  async upsertPaymentStatus(dto: { month: string; employee_id: string; status: string }) {
-    const [existing] = await this.db.select().from(schema.payrollPaymentStatus)
-      .where(and(eq(schema.payrollPaymentStatus.month, dto.month), eq(schema.payrollPaymentStatus.employee_id, dto.employee_id)));
-    
+  async upsertPaymentStatus(dto: {
+    month: string;
+    employee_id: string;
+    status: string;
+  }) {
+    const [existing] = await this.db
+      .select()
+      .from(schema.payrollPaymentStatus)
+      .where(
+        and(
+          eq(schema.payrollPaymentStatus.month, dto.month),
+          eq(schema.payrollPaymentStatus.employee_id, dto.employee_id),
+        ),
+      );
+
     if (existing) {
-      await this.db.update(schema.payrollPaymentStatus).set({ status: dto.status }).where(eq(schema.payrollPaymentStatus.id, (existing as any).id));
+      await this.db
+        .update(schema.payrollPaymentStatus)
+        .set({ status: dto.status })
+        .where(eq(schema.payrollPaymentStatus.id, (existing as any).id));
     } else {
       await this.db.insert(schema.payrollPaymentStatus).values({
         employee_id: dto.employee_id,
         month: dto.month,
-        status: dto.status
+        status: dto.status,
       });
     }
     return this.getPaymentStatus(dto.month, dto.employee_id);
@@ -46,20 +67,35 @@ export class PayrollService {
   }
 
   async listSheetEntries(fromDate: string, toDate: string) {
-    return this.db.select().from(schema.payrollSheetEntries)
-      .where(and(eq(schema.payrollSheetEntries.from_date, fromDate), eq(schema.payrollSheetEntries.to_date, toDate)));
+    return this.db
+      .select()
+      .from(schema.payrollSheetEntries)
+      .where(
+        and(
+          eq(schema.payrollSheetEntries.from_date, fromDate),
+          eq(schema.payrollSheetEntries.to_date, toDate),
+        ),
+      );
   }
 
-  async bulkUpsertSheetEntries(dto: { from_date: string; to_date: string; entries: any[] }) {
+  async bulkUpsertSheetEntries(dto: {
+    from_date: string;
+    to_date: string;
+    entries: any[];
+  }) {
     let upserted = 0;
     for (const entry of dto.entries) {
-      const [existing] = await this.db.select().from(schema.payrollSheetEntries)
-        .where(and(
-          eq(schema.payrollSheetEntries.employee_db_id, entry.employee_db_id),
-          eq(schema.payrollSheetEntries.from_date, dto.from_date),
-          eq(schema.payrollSheetEntries.to_date, dto.to_date)
-        ));
-      
+      const [existing] = await this.db
+        .select()
+        .from(schema.payrollSheetEntries)
+        .where(
+          and(
+            eq(schema.payrollSheetEntries.employee_db_id, entry.employee_db_id),
+            eq(schema.payrollSheetEntries.from_date, dto.from_date),
+            eq(schema.payrollSheetEntries.to_date, dto.to_date),
+          ),
+        );
+
       const data: any = {
         employee_db_id: entry.employee_db_id,
         from_date: dto.from_date,
@@ -73,11 +109,14 @@ export class PayrollService {
         fine_adv_extra: entry.fine_adv_extra,
         ot_rate_override: entry.ot_rate_override,
         remarks: entry.remarks,
-        bank_cash: entry.bank_cash
+        bank_cash: entry.bank_cash,
       };
 
       if (existing) {
-        await this.db.update(schema.payrollSheetEntries).set(data).where(eq(schema.payrollSheetEntries.id, (existing as any).id));
+        await this.db
+          .update(schema.payrollSheetEntries)
+          .set(data)
+          .where(eq(schema.payrollSheetEntries.id, (existing as any).id));
       } else {
         await this.db.insert(schema.payrollSheetEntries).values(data);
       }
@@ -86,12 +125,12 @@ export class PayrollService {
     return { upserted };
   }
 
-  async exportPdf(query: any, body: any) {
+  async exportPdf(_query: any, _body: any) {
     // This is a placeholder for actual PDF generation logic
-    return { 
+    return {
       message: 'PDF export logic would go here',
       timestamp: new Date().toISOString(),
-      report_type: 'payroll_summary'
+      report_type: 'payroll_summary',
     };
   }
 }

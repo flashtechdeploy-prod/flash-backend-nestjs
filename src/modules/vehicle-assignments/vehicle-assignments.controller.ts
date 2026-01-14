@@ -10,7 +10,12 @@ import {
   UseGuards,
   ParseIntPipe,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { VehicleAssignmentsService } from './vehicle-assignments.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
@@ -35,7 +40,13 @@ export class VehicleAssignmentsController {
     @Query('status') status?: string,
     @Query('limit') limit?: number,
   ) {
-    return this.service.findAll({ vehicle_id, from_date, to_date, status, limit });
+    return this.service.findAll({
+      vehicle_id,
+      from_date,
+      to_date,
+      status,
+      limit,
+    });
   }
 
   @Post()

@@ -22,7 +22,10 @@ export class CreateRoleDto {
   @IsOptional()
   description?: string;
 
-  @ApiPropertyOptional({ type: [Number], description: 'Array of permission IDs' })
+  @ApiPropertyOptional({
+    type: [Number],
+    description: 'Array of permission IDs',
+  })
   @IsArray()
   @IsInt({ each: true })
   @IsOptional()
@@ -35,12 +38,17 @@ export class UpdateRoleDto {
   @IsOptional()
   name?: string;
 
-  @ApiPropertyOptional({ example: 'Can manage all HR operations with elevated access' })
+  @ApiPropertyOptional({
+    example: 'Can manage all HR operations with elevated access',
+  })
   @IsString()
   @IsOptional()
   description?: string;
 
-  @ApiPropertyOptional({ type: [Number], description: 'Array of permission IDs' })
+  @ApiPropertyOptional({
+    type: [Number],
+    description: 'Array of permission IDs',
+  })
   @IsArray()
   @IsInt({ each: true })
   @IsOptional()

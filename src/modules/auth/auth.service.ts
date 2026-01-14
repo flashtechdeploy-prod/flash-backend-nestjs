@@ -20,9 +20,11 @@ export class AuthService {
     return this.usersService.create(createUserDto);
   }
 
-  async login(loginDto: LoginDto): Promise<{ access_token: string; token_type: string }> {
+  async login(
+    loginDto: LoginDto,
+  ): Promise<{ access_token: string; token_type: string }> {
     const user = await this.usersService.findByEmail(loginDto.username);
-    
+
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
@@ -31,7 +33,10 @@ export class AuthService {
       throw new UnauthorizedException('Account is deactivated');
     }
 
-    const isPasswordValid = await this.usersService.validatePassword(user, loginDto.password);
+    const isPasswordValid = await this.usersService.validatePassword(
+      user,
+      loginDto.password,
+    );
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }

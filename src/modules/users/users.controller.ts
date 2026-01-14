@@ -11,7 +11,12 @@ import {
   HttpStatus,
   ParseIntPipe,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/user.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -28,10 +33,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Get all users (superuser only)' })
   @ApiQuery({ name: 'skip', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })
-  async findAll(
-    @Query('skip') skip?: number,
-    @Query('limit') limit?: number,
-  ) {
+  async findAll(@Query('skip') skip?: number, @Query('limit') limit?: number) {
     return this.usersService.findAll(skip, limit);
   }
 

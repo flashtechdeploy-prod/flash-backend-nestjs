@@ -13,7 +13,11 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { AdminService } from './admin.service';
-import { CreateRoleDto, UpdateRoleDto, CreatePermissionDto } from './dto/admin.dto';
+import {
+  CreateRoleDto,
+  UpdateRoleDto,
+  CreatePermissionDto,
+} from './dto/admin.dto';
 import { AdminUserCreateDto, AdminUserUpdateDto } from '../users/dto/user.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { SuperUserGuard } from '../auth/guards/superuser.guard';
@@ -81,7 +85,7 @@ export class AdminController {
   @HttpCode(HttpStatus.CREATED)
   async createUser(@Body() createDto: AdminUserCreateDto) {
     const user = await this.adminService.createUser(createDto);
-    const { password, ...result } = user;
+    const { password: _password, ...result } = user;
     return result;
   }
 
@@ -92,7 +96,7 @@ export class AdminController {
     @Body() updateDto: AdminUserUpdateDto,
   ) {
     const user = await this.adminService.updateUser(userId, updateDto);
-    const { password, ...result } = user;
+    const { password: _password, ...result } = user;
     return result;
   }
 

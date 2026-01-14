@@ -13,7 +13,13 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery, ApiConsumes } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiQuery,
+  ApiConsumes,
+} from '@nestjs/swagger';
 import { VehiclesService } from './vehicles.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
@@ -28,10 +34,7 @@ export class VehiclesController {
   @ApiOperation({ summary: 'Get all vehicles' })
   @ApiQuery({ name: 'skip', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })
-  async findAll(
-    @Query('skip') skip?: number,
-    @Query('limit') limit?: number,
-  ) {
+  async findAll(@Query('skip') skip?: number, @Query('limit') limit?: number) {
     return this.vehiclesService.findAll(skip, limit);
   }
 
@@ -90,7 +93,12 @@ export class VehiclesController {
     @UploadedFile() file: Express.Multer.File,
   ) {
     const url = `/uploads/vehicles/${vehicle_id}/docs/${file.originalname}`;
-    return this.vehiclesService.uploadDocument(vehicle_id, file.originalname, url, file.mimetype);
+    return this.vehiclesService.uploadDocument(
+      vehicle_id,
+      file.originalname,
+      url,
+      file.mimetype,
+    );
   }
 
   @Delete(':vehicle_id/documents/:doc_id')
@@ -118,7 +126,12 @@ export class VehiclesController {
     @UploadedFile() file: Express.Multer.File,
   ) {
     const url = `/uploads/vehicles/${vehicle_id}/images/${file.originalname}`;
-    return this.vehiclesService.uploadImage(vehicle_id, file.originalname, url, file.mimetype);
+    return this.vehiclesService.uploadImage(
+      vehicle_id,
+      file.originalname,
+      url,
+      file.mimetype,
+    );
   }
 
   @Delete(':vehicle_id/images/:image_id')
